@@ -1,7 +1,7 @@
 module.exports = {
-	globDirectory: 'googlebooksclient/',
+	globDirectory: 'build/',
 	globPatterns: [
-		'**/*.{json,ico,html,png,txt,md,css,jsx,js,svg}'
+		'**/*.{json,ico,html,png,txt,css,js}'
 	],
 	swDest: 'build/sw.js',
 	ignoreURLParametersMatching: [
