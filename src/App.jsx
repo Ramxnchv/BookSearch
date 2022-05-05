@@ -11,6 +11,19 @@ function App() {
   const [empty, setEmpty] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
 
+  const selectMagazines = () => {
+    setType("magazines");
+    document.getElementById("authors").disabled = true;
+  }
+  const selectAll = () => {
+    setType("all");
+    document.getElementById("authors").disabled = false;
+  }
+  const selectBooks = () => {
+    setType("books");
+    document.getElementById("authors").disabled = false;
+  }
+
   const buscarResultados = async () => {
     if (authors === "" && title === "") {
       alert("Ambos campos no pueden ser vacíos")
@@ -19,7 +32,7 @@ function App() {
       const it = localStorage.getItem(title + " " + authors);
       let response = null;
       if (it !== null){
-        response = it;
+        response = JSON.parse(it);
       } else {
         response = await axios
         .get(
@@ -31,7 +44,7 @@ function App() {
             }
           }
         );
-        localStorage.setItem(title + " " + authors, response);
+        localStorage.setItem(title + " " + authors, JSON.stringify(response));
       }
       if (response.data.totalItems > 0) {
         const resultados = response.data.items.map(function (book) {
@@ -66,19 +79,19 @@ function App() {
         </div>
         <div className="selectores d-flex justify-content-center mb-5">
           <div className="form-check me-3">
-            <input className="form-check-input" type="radio" name="flexRadioDefault" id="allRadio" onChange={e => setType("all")} defaultChecked />
+            <input className="form-check-input" type="radio" name="flexRadioDefault" id="allRadio" onChange={(e) => selectAll()} defaultChecked />
             <label className="form-check-label" htmlFor="allRadio">
               All
             </label>
           </div>
           <div className="form-check me-3">
-            <input className="form-check-input" type="radio" name="flexRadioDefault" id="booksRadio" onChange={e => setType("books")} />
+            <input className="form-check-input" type="radio" name="flexRadioDefault" id="booksRadio" onChange={(e) => selectBooks()} />
             <label className="form-check-label" htmlFor="booksRadio">
               Books
             </label>
           </div>
           <div className="form-check">
-            <input className="form-check-input" type="radio" name="flexRadioDefault" id="magazinesRadio" onChange={e => setType("magazines")} />
+            <input className="form-check-input" type="radio" name="flexRadioDefault" id="magazinesRadio" onChange={(e) => selectMagazines()} />
             <label className="form-check-label" htmlFor="magazinesRadio">
               Magazines
             </label>
