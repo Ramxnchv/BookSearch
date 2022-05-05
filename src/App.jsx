@@ -12,27 +12,38 @@ function App() {
   const [loading, setLoading] = React.useState(false);
 
   const buscarResultados = async () => {
-    setLoading(true)
-    const response = await axios
-      .get(
-        'https://www.googleapis.com/books/v1/volumes',
-        {
-          params: {
-            q: JSON.stringify(title + " " + authors),
-            printType: type
+    if (authors === "" && title === "") {
+      alert("Ambos campos no pueden ser vacíos")
+    } else {
+      setLoading(true)
+      const it = localStorage.getItem(title + " " + authors);
+      let response = null;
+      if (it){
+        response = it;
+      } else {
+        response = await axios
+        .get(
+          'https://www.googleapis.com/books/v1/volumes',
+          {
+            params: {
+              q: JSON.stringify(title + " " + authors),
+              printType: type
+            }
           }
-        }
-      );
-    if(response.data.totalItems > 0){
-      const resultados = response.data.items.map(function(book){
-        return {titulo: book.volumeInfo.title, autores: book.volumeInfo.authors, enlace: book.volumeInfo.infoLink}
-      });
-      setResults(resultados)
-      setEmpty(false)
-      setLoading(false)
-    }else{
-      setEmpty(true)
-      setLoading(false)
+        );
+        localStorage.setItem(title + " " + authors, response);
+      }
+      if (response.data.totalItems > 0) {
+        const resultados = response.data.items.map(function (book) {
+          return { titulo: book.volumeInfo.title, autores: book.volumeInfo.authors, enlace: book.volumeInfo.infoLink }
+        });
+        setResults(resultados)
+        setEmpty(false)
+        setLoading(false)
+      } else {
+        setEmpty(true)
+        setLoading(false)
+      }
     }
   }
 
@@ -61,13 +72,13 @@ function App() {
             </label>
           </div>
           <div className="form-check me-3">
-            <input className="form-check-input" type="radio" name="flexRadioDefault" id="booksRadio" onChange={e => setType("books")}/>
+            <input className="form-check-input" type="radio" name="flexRadioDefault" id="booksRadio" onChange={e => setType("books")} />
             <label className="form-check-label" htmlFor="booksRadio">
               Books
             </label>
           </div>
           <div className="form-check">
-            <input className="form-check-input" type="radio" name="flexRadioDefault" id="magazinesRadio" onChange={e => setType("magazines")}/>
+            <input className="form-check-input" type="radio" name="flexRadioDefault" id="magazinesRadio" onChange={e => setType("magazines")} />
             <label className="form-check-label" htmlFor="magazinesRadio">
               Magazines
             </label>
@@ -77,23 +88,23 @@ function App() {
       <h5 className="mb-3">Results</h5>
       <div id="results">
         {loading ?
-        <div className="d-flex justify-content-center mt-3">
-          <div className="spinner-border" role="status"></div>
-          <span className='ms-3'>Loading results...</span>
-        </div> 
-        :
-        !empty ? 
-        results.map((r,i) =>
-          <a href={r.enlace}>
-          <div className="card mb-2 p-2" key={i}>
-            <h5 className="card-title">{r.titulo}</h5>
-            <h6 className="autor">{r.autores}</h6>
-            <p className="card-text">{r.enlace}</p>
+          <div className="d-flex justify-content-center mt-3">
+            <div className="spinner-border" role="status"></div>
+            <span className='ms-3'>Loading results...</span>
           </div>
-          </a>
-        ) :
-        <h3>No hay resultados</h3>}
-        
+          :
+          !empty ?
+            results.map((r, i) =>
+              <a href={r.enlace}>
+                <div className="card mb-2 p-2" key={i}>
+                  <h5 className="card-title">{r.titulo}</h5>
+                  <h6 className="autor">{r.autores}</h6>
+                  <p className="card-text">{r.enlace}</p>
+                </div>
+              </a>
+            ) :
+            <h3>No hay resultados</h3>}
+
       </div>
     </div>
   );
