@@ -3,7 +3,7 @@ module.exports = {
 	globPatterns: [
 		'**/*.{json,ico,html,png,txt,md,css,jsx,js,svg}'
 	],
-	swDest: 'googlebooksclient/sw.js',
+	swDest: 'googlebooksclient/public/sw.js',
 	ignoreURLParametersMatching: [
 		/^utm_/,
 		/^fbclid$/
