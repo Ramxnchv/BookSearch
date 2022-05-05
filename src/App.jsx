@@ -18,7 +18,7 @@ function App() {
       setLoading(true)
       const it = localStorage.getItem(title + " " + authors);
       let response = null;
-      if (it){
+      if (it !== null){
         response = it;
       } else {
         response = await axios
