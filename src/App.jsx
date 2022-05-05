@@ -34,13 +34,15 @@ function App() {
       if (it !== null){
         response = JSON.parse(it);
       } else {
+        let query = title !== "" && authors !== "" ? title + " " + authors : title !== "" ? "intitle:" + title.trim().replaceAll(" ", "+") : "inauthor:" + authors.replaceAll(" ", "+");
         response = await axios
         .get(
           'https://www.googleapis.com/books/v1/volumes',
           {
             params: {
-              q: JSON.stringify(title + " " + authors),
-              printType: type
+              q: JSON.stringify(query),
+              printType: type,
+              maxResults: 40
             }
           }
         );
